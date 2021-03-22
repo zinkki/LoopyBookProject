@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.mapper.NoticeMapper">
+
+	<select id="getList" resultType="kr.co.domain.NoticeVO">
+		SELECT * FROM notice
+	</select>
+
+	<insert id="insert">
+		INSERT INTO notice(seq_bno, notice_title, notice_content, notice_writer, notice_date)
+		VALUES(seq_bno.nextval, #{notice_title}, #{notice_content}, #{notice_writer}, SYSDATE)
+	</insert>
+</mapper>
+	

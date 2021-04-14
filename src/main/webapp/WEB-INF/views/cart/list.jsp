@@ -49,11 +49,13 @@
 				</thead>
 				
 				<tbody class="xans-element- xans-order xans-order-list">
+				<form id="actionForm">
+				<c:forEach items="${bookList }" var="bookList" varStatus="status">
 					<tr class="xans-record-">
-						<td> ${fileName } </td>
-						<td> ${book_title }</td>
-						<td class="product">${amount } </td>
-						<td class="price"> </td>
+						<td><a><img style="width: 220px;" src= "${bookList.fileName}"></a> </td>
+						<td>${bookList.book_title }</td>
+						<td class="product"></td>
+						<td class="price"> <p><fmt:formatNumber value="${bookList.book_price }" type="currency"></fmt:formatNumber></p></td>
 						<td>
 							<span class="quantity"><input id="quantity_id_0"
 								name="quantity_name_0" size="2" value="1" type="text">
@@ -77,7 +79,8 @@
 							<a href="javascript:;" onclick="Basket.deleteBasketItem(0);" class="btntype7">삭제</a>
 						</td>
 					</tr>
-
+				</c:forEach>
+				</form>
 				</tbody>
 				<tfoot>
 					<tr>

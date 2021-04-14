@@ -29,14 +29,27 @@ public class CartController {
 	CartService cartService;
 	
 	@GetMapping("/list")
-	public void list(CartVO cart, HttpSession session, Model model) {
-		cart.getUser_number();
-//		BookVO bookvo = new BookVO();
-		session.setAttribute("user_number", cart.getUser_number());
-		cartService.readlist(cart.getUser_number());
+	public void list(CartVO cart, BookVO book,Model model,HttpSession session) {
 		log.info("list....................");
-		
+		int user_number = (int)session.getAttribute("user_number");
+		model.addAttribute("user_numer", user_number);
+		model.addAttribute("cartList", cartService.readCartList(user_number));
+		model.addAttribute("bookList", cartService.readBookList(user_number));
+		session.setAttribute("cartList", cartService.readCartList(user_number));
+		session.setAttribute("bookList", cartService.readBookList(user_number));
+		int totalPrice = book.getBook_price() *  cart.getAmount();
+		model.addAttribute("totalPrice", totalPrice);
 	}
+	@PostMapping("/list")
+	public String goList(CartVO cart, BookVO book,Model model,HttpSession session) {
+		log.info("listttt....................");
+		int user_number = (int)session.getAttribute("user_number");
+		model.addAttribute("user_numer", user_number);
+		model.addAttribute("cartList", cartService.readCartList(user_number));
+		model.addAttribute("bookList", cartService.readBookList(user_number));
+		return "/cart/list";
+	}
+	
 	@PostMapping("/addCart")
 	public String addCart(@ModelAttribute("cartvo") CartVO cartvo,
 						  HttpSession session,

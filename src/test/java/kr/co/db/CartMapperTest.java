@@ -24,11 +24,6 @@ public class CartMapperTest {
 	@Autowired
 	CartMapper cartMapper;
 	
-	@Autowired
-	UserMapper userMapper;
-	
-	@Autowired
-	BookMapper bookMapper;
 	
 	@Test
 	public void insertTest() {
@@ -53,15 +48,14 @@ public class CartMapperTest {
 	}
 	
 	@Test
-	public void selectlistTest() {
-		log.info("selectListTest()...........");
-		CartVO cartvo = new CartVO();
-		cartvo.setUser_number(2);
-		List<CartVO> list = cartMapper.selectlist(cartvo.getUser_number());
-
-		for (CartVO cartVO : list) {
+	public void getListTest(){
+		log.info("getListTest............");
+		List<CartVO> vo = cartMapper.getList();
+		
+		for(CartVO cartVO : vo) {
 			log.info(cartVO);
 		}
+
 	}
 	
 	

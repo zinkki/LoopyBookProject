@@ -5,142 +5,265 @@
 
 <%@ include file="../includes/header.jsp"%>
 
-<div id="contents">
-
-
-	<div class="titleArea">
-		<h2>
-			<span>CART</span>
-		</h2>
-	</div>
-
-	<!-- EDNplus 장바구나 스크립트 -->
-	<script type="text/javascript"
-		src="//script.about.co.kr/templates/script/cm/adbay.cart.controller.js"></script>
-
-
-	<div id="adbay_cart" style="display: none;"></div>
-	<!-- EDNplus 장바구나 스크립트 종료 -->
-
-	<!-- 장바구니 모듈 Package -->
-	<div class="xans-element- xans-order xans-order-basketpackage ">
-
-		<div class="orderListArea">
-			<div class="xans-element- xans-order xans-order-normtitle title ">
-				<h3>일반상품 (2)</h3>
-			</div>
-
+<div class="container-fluid">
+	<br>
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<div class="container-fluid" >
+			<h2>CART</h2>
+			<div class="collapse navbar-collapse" id="navbarNav"></div>
+		</div>
+	</nav>
+	<br>
+	<div id="contents">
+		<form id="actionForm" >
 			<!-- 일반상품 (기본배송) -->
-			<table border="1" summary=""
-				class="xans-element- xans-order xans-order-normnormal boardList xans-record-">
-				
-				<thead>
+			<table style="width: 100%" summary="" border="1" class="xans-element- xans-order xans-order-normnormal boardList xans-record-">
+				<thead align="center">
 					<tr>
-						<th scope="col" class="chk">
-							<input type="checkbox"onclick="Basket.setCheckBasketList('basket_product_normal_type_normal', this);">
-						</th>
-						<th scope="col" class="thumb">BOOK IMAGE</th>
-						<th scope="col" class="product">TITLE</th>
+						<th scope="col" class="check">CHECK</th>
+						<th scope="col" class="thumb" style="width: 10%">ITEM</th>
+						<th scope="col" class="product"style="width: 20%" >TITLE</th>
 						<th scope="col" class="price">PRICE</th>
 						<th scope="col" class="amount">AMOUNT</th>
-						<th scope="col" class="total">CHARGE</th>
+						<th scope="col" class="total">TOTAL</th>
 						<th scope="col" class="button">SELECT</th>
 					</tr>
 				</thead>
-				
 				<tbody class="xans-element- xans-order xans-order-list">
-				<form id="actionForm">
-				<c:forEach items="${bookList }" var="bookList" varStatus="status">
-					<tr class="xans-record-">
-						<td><a><img style="width: 220px;" src= "${bookList.fileName}"></a> </td>
-						<td>${bookList.book_title }</td>
-						<td class="product"></td>
-						<td class="price"> <p><fmt:formatNumber value="${bookList.book_price }" type="currency"></fmt:formatNumber></p></td>
-						<td>
-							<span class="quantity"><input id="quantity_id_0"
-								name="quantity_name_0" size="2" value="1" type="text">
-								<a href="javascript:;" onclick="Basket.addQuantityShortcut('quantity_id_0', 0);">
-									<img src="http://img.echosting.cafe24.com/skin/base_ko_KR/order/btn_quantity_up.gif"
-									alt="증가" class="QuantityUp"></a><a href="javascript:;"
-									onclick="Basket.outQuantityShortcut('quantity_id_0', 0);">
-									<img src="http://img.echosting.cafe24.com/skin/base_ko_KR/order/btn_quantity_down.gif"
-									alt="감소" class="QuantityDown">
-								</a>
-							</span> 
-							<a href="javascript:;" onclick="Basket.modifyQuantity()">
-							<img src="/web/season2_skin/base/btn/btn_quantity_modify.png" alt="변경" title=""></a>
-						</td>
-						<td class="total">
-							<strong>90,000원</strong>
-							<div class="displaynone"></div>
-						</td>
-						<td class="button">
-							<a href="javascript:;" onclick="Basket.orderBasketItem(0);" class="btntype6">주문하기</a>
-							<a href="javascript:;" onclick="Basket.deleteBasketItem(0);" class="btntype7">삭제</a>
-						</td>
-					</tr>
-				</c:forEach>
-				</form>
+					<c:set var="sum" value="0" />
+					<c:forEach items="${bookList }" var="bookList" varStatus="status">
+						<tr class="xans-record-" align="center">
+							<td><label><input type="checkbox" id="checkBox${status.index}"></label></td>
+							<td><a><img style="width: 220px;" src= "${bookList.fileName}"></a></td>
+							<td><p>${bookList.book_title }</p><input type="hidden" name="book_id" id="book_id${status.index }" value="${bookList.book_id }"></td>
+							<td><p><fmt:formatNumber value="${bookList.book_price }" type="currency"></fmt:formatNumber></p></td>
+							<td><span class="btn-group-vertical">
+								<button onclick="modifyAmount(${bookList.book_id } , ${cartList[status.index].amount + 1 })" name="cartAmount" value="${cartList[status.index].amount + 1 }" style="border: 0; background-color: #ffffff;"><i class="fas fa-sort-up" ></i></button>
+								<button onclick="modifyAmount(${bookList.book_id } , ${cartList[status.index].amount - 1 })" name="cartAmount" value="${cartList[status.index].amount - 1 }" style="border: 0; background-color: #ffffff;margin: 10 10"><i class="fas fa-sort-down" ></i></button>
+								</span>
+								<input id="cartAmount${status.index }" name="cartAmount" size="2" value="${cartList[status.index].amount }" type="text">		
+								<input class="btn btn-outline-secondary btn-sm" onclick="modifyAmount2(${bookList.book_id }, cartAmount${status.index })" type="button" value="변경">
+                			</td>
+							<td class="total">
+								<strong><fmt:formatNumber value="${bookList.book_price * cartList[status.index].amount  }" type="currency"></fmt:formatNumber></strong>
+								<input type="hidden" name ="totalPrice" value="${bookList.book_price * cartList[status.index].amount  }">
+							</td>
+							<td><span class="btn-group-vertical">
+								<input id="index${status.index }" name="index" value="${status.index }"type="hidden">		
+								<a href="javascript:;" class="btn btn-outline-secondary btn-sm" onclick="oneBookOrder(${bookList.book_id },cartAmount${status.index })" >주문하기</a>
+								<a href="javascript:;" class="btn btn-outline-secondary btn-sm" onclick="cart(${bookList.book_id })">삭제</a>
+								</span>
+							</td>	
+						</tr>
+					<c:set var="sum" value="${sum + (bookList.book_price * cartList[status.index].amount )}" />
+					</c:forEach>
+					<tfoot>
+						<tr align="center" height="50">
+							<td colspan="7">상품구매금액  &nbsp;<strong><fmt:formatNumber value="${sum}"></fmt:formatNumber></strong>
+								<span class="displaynone"> </span> + 배송비 <strong><fmt:formatNumber value="${sum < 30000 ? 2500 : 0 }"></fmt:formatNumber></strong>
+								<span class="displaynone"> </span> = 합계 : <strong><fmt:formatNumber value="${sum < 30000 ? sum+2500 : sum }" type="currency" ></fmt:formatNumber></strong>
+							</td>
+						</tr>
+					</tfoot>
 				</tbody>
-				<tfoot>
-					<tr>
-						<td colspan="10"><strong class="type">[기본배송]</strong> 상품구매금액
-							<strong>138,000 <span class="displaynone">()</span></strong><span
-							class="displaynone"> </span> + 배송비 0 (무료)<span
-							class="displaynone"> </span> = 합계 : <strong class="total"><span>133,500</span>원</strong>
-							<span class="displaynone"> </span></td>
-					</tr>
-				</tfoot>
 			</table>
-		</div>
-
-		<!-- 선택상품 제어 버튼 -->
-		<div class="xans-element- xans-order xans-order-selectorder ">
-			<span class="left"> <strong class="ctrlTxt">선택상품을</strong> <a
-				href="#none" onclick="Basket.deleteBasket()" class="btntype8">삭제하기</a>
-
-			</span> <span class="right"> <a href="#none"
-				onclick="Basket.emptyBasket()" class="btntype8">장바구니비우기</a>
-			</span>
-		</div>
-
-
-		<!-- 주문 버튼 -->
-		<div class="xans-element- xans-order xans-order-totalorder">
-			<a href="#none" onclick="Basket.orderSelectBasket(this)"
-				link-order="/order/orderform.html?basket_type=all_buy"
-				link-login="/member/login.html" class=""><img
-				src="/web/season2_skin/base/btn/btn_order_select.png"
-				onmouseover="this.src='/web/season2_skin/base/btn/btn_order_select_over.png' "
-				onmouseout="this.src='/web/season2_skin/base/btn/btn_order_select.png' "
-				alt="선택상품주문" title=""></a> <a href="#none"
-				onclick="Basket.orderAll(this)"
-				link-order="/order/orderform.html?basket_type=all_buy"
-				link-login="/member/login.html" class=" "><img
-				src="/web/season2_skin/base/btn/btn_order_all.png"
-				onmouseover="this.src='/web/season2_skin/base/btn/btn_order_all_over.png' "
-				onmouseout="this.src='/web/season2_skin/base/btn/btn_order_all.png' "
-				alt="전체상품주문"></a><span class="right"> <a href="/"
-				class="btntype8">쇼핑계속하기</a>
-			</span>
-		</div>
-		<br>
-		<!-- 네이버 체크아웃 구매 버튼  -->
-		<div id=""></div>
+			<br>
+			<div class="xans-element- xans-order xans-order-totalorder" align="center" >
+				<button class="btn btn-dark" style="background-color: #b4b4b4; color: black; border: 0;" onclick="selectRemoveBtn()"> 선택상품 삭제하기</button>
+				<button class="btn btn-dark" style="background-color: pink; color: black; border: 0;" onclick="checkBtn()"> 선택상품 주문하기</button>
+				<button class="btn btn-dark" style="background-color: #b4b4b4; color: black; border: 0;" onclick="allcheckBtn()"> 전체상품 주문하기</button>
+			</div>
+			<br>
+		</form>
 	</div>
-	<!-- //장바구니 모듈 Package -->
-
-	<!-- 관심상품 목록 -->
-	<div
-		class="xans-element- xans-myshop xans-myshop-wishlist displaynone xans-record-">
-		<!--
-    $login_page = /member/login.html
-    $count = 5
-    $mode = basket
-    -->
-
-	</div>
-
 </div>
+<!-- ???이건뭘까...modal...??? -->
+<div class="modal" tabindex="-1" id="cartDelete_modal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Modal title</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal"
+					aria-label="Close"></button>
+			</div>
+			<div class="modal-body" id="cart_modal_body">
+				<p>Modal body text goes here.</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" data-dismiss="modal"
+					id="deleteBtn" onclick="cartdelete()">삭제</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+//한개 목록 삭제 버튼 눌렀을 때 >>O
+function cart(id){
+	var book_id = id;
+	var actionForm = $("#actionForm");
+    $('#cart_modal_body').html("선택하신 상품을 삭제하시겠습니까?");
+	$('#cartDelete_modal').modal('show');
+	
+	$('#deleteBtn').click(function(e) {
+		$.ajax({
+		    url: "/cart/remove",
+		    type: "POST",
+		    data: { "book_id" : book_id },
+		    success : function(){
+		     	location = '/cart/list';
+		    },
+		    error : function(){
+		    	alert("!!!!!!");	
+		    }
+		  });
+	});
+}	
+// 수량 수정  >> O
+function modifyAmount(id,amount){
+	var book_id = id;
+	var cartAmount = amount;
+	$.ajax({
+	    url: "/cart/modify",
+	    type: "POST",
+	    data: { "book_id" : book_id , "cartAmount" : cartAmount },
+	    success : function(){
+	     	location = '/cart/list';
+	    },
+	    error : function(){
+	    	alert("!!!!!!");	
+	    }
+	  });	
+}
+//수량 플러스 마이너스로 수정 >>O
+function modifyAmount2(id,amount){
+	var book_id = id;
+	var cartAmount = amount.value;
+	$.ajax({
+	    url: "/cart/modify",
+	    type: "POST",
+	    data: { "book_id" : book_id , "cartAmount" : cartAmount },
+	    success : function(){
+	     	location = '/cart/list';
+	    },
+	    error : function(){
+	    	alert("!!!!!!");	
+	    }
+	  });	
+}
+//목록에서 한개의 상품 옆 주문하기 눌렀을 때
+function oneBookOrder() {
+	if(confirm("상품을 주문하시겠습니까?")){
+		location.href='/order/oneBookOrder';
+	}else {
+		history.go(-1);
+	}
+}
+/* function oneBookOrder(id,amount){
+	var book_id = id;
+	var cartAmount = amount.value;
+	$.ajaxSettings.traditional = true;
+		$.ajax({
+		    url: "/order/oneBookOrder",
+		    type: "POST",
+		    data: { "book_id" : book_id , "cartAmount" : cartAmount },
+		    success : function(){
+		     
+		    	location = '/order/oneBookOrder';
+		    },
+		    error : function(){
+		    	alert("!!!!!!");	
+		    }
+		  });
+}	 */
+// 선택상품 주문
+function checkBtn(){
+	
+	var indexArray = [];
+	
+	for(var i=0;i<${listSize};i++){
+		if(($('#checkBox${status.index}'+i)).prop("checked")){
+			indexArray[i] = i;
+			console.log('yes');
+			
+		}else{
+			continue;
+		}
+	}
+		
+	console.log(indexArray);
+	
+		$.ajaxSettings.traditional = true;
+		$.ajax({
+		    url: "/order/selectlist",
+		    type: "POST",
+		    data: { "indexArray" : indexArray },
+		    success : function(){
+		     	location = '/order/selectlist';
+		    },
+		    error : function(){
+		    	alert("상품을 선택해주세요!");	
+		    }
+		  });
+}
+// 전체상품 주문
+function allcheckBtn(){
+	var indexArray = [];
+	
+	for(var i=0;i<${listSize};i++){
+		indexArray[i] = i;
+		console.log('yes');
+	}
+		
+	console.log(indexArray);
+	
+		$.ajaxSettings.traditional = true;
+		$.ajax({
+		    url: "/order/selectlist",
+		    type: "POST",
+		    data: { "indexArray" : indexArray },
+		    success : function(){
+		     	location = '/order/selectlist';
+		    },
+		    error : function(){
+		    	alert("상품을 선택해주세요!");	
+		    }
+		  });
+	
+}
+
+// 선택상품 삭제하기
+function selectRemoveBtn(){
+	
+var indexArray = [];
+	
+	for(var i=0;i<${listSize};i++){
+		if(($('#checkBox${status.index}'+i)).prop("checked")){
+			indexArray[i] = i;
+			console.log('yes');
+			
+		}else{
+			continue;
+		}
+	}
+		
+	console.log(indexArray);
+	
+		$.ajaxSettings.traditional = true;
+		$.ajax({
+		    url: "/cart/selectRemove",
+		    type: "POST",
+		    data: { "indexArray" : indexArray },
+		    success : function(){
+		     	location = '/cart/list';
+		    },
+		    error : function(){
+		    	alert("상품을 선택해주세요!");	
+		    }
+		  });
+}
+	
+</script>
 
 <%@ include file="../includes/footer.jsp"%>

@@ -29,8 +29,8 @@ public class CartMapperTest {
 	public void insertTest() {
 		log.info("insertTest...............");
 		CartVO cvo = new CartVO();
-		cvo.setBook_id(1);
-		cvo.setUser_number(41);
+		cvo.setBook_id(10);
+		cvo.setUser_number(2);
 		cvo.setAmount(1);
 		log.info(cvo);
 		cartMapper.insert(cvo);

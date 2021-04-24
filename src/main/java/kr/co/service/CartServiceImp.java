@@ -13,7 +13,12 @@ import kr.co.mapper.CartMapper;
 public class CartServiceImp implements CartService {
 
 	@Autowired
-	private CartMapper cartMapper;
+	CartMapper cartMapper;
+	
+	@Override
+	public List<CartVO> cartList() {
+		return cartMapper.getList();
+	}
 
 	@Override
 	public void addcart(CartVO cart) {
@@ -26,13 +31,18 @@ public class CartServiceImp implements CartService {
 	}
 
 	@Override
-	public void addModify(CartVO cart) {
-		cartMapper.addupdate(cart);
+	public int modify(CartVO cart) {
+		return cartMapper.update(cart);
 	}
 
 	@Override
-	public List<CartVO> cartList() {
-		return cartMapper.getList();
+	public int addModify(CartVO cart) {
+		return cartMapper.addupdate(cart);
+	}
+
+	@Override
+	public int amountModify(CartVO cart) {
+		return cartMapper.amountUpdate(cart);
 	}
 
 	@Override
@@ -49,7 +59,8 @@ public class CartServiceImp implements CartService {
 	public int remove(int book_id) {
 		return cartMapper.delete(book_id);
 	}
-	
+
+
 	
 
 }

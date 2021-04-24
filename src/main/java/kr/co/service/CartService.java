@@ -11,9 +11,14 @@ public interface CartService {
 	
 	public void addcart(CartVO cart);
 	
+	//cart리스트에서 이미 존재하는지 ??
 	public String findcartbook(CartVO cart);
 	
-	public void addModify(CartVO cart);
+	public int modify(CartVO cart);
+	
+	public int addModify(CartVO cart);
+	
+	public int amountModify(CartVO cart);
 	
 	//장바구니 리스트 불러오기
 	public List<CartVO> readCartList(int user_number);
